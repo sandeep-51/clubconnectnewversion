@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Edit User: {{ user_to_edit.username }}</h2>
+        <a href="{% url 'manage_users' %}" class="btn btn-secondary">Back to User Management</a>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Edit User Details</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" value="{{ user_to_edit.username }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" value="{{ user_to_edit.email }}" disabled>
+                </div>
+                <div class="mb-3">
+                    <label for="user_type" class="form-label">User Type</label>
+                    <select class="form-select" id="user_type" name="user_type">
+                        <option value="admin" {% if user_to_edit.user_type == 'admin' %}selected{% endif %}>Admin</option>
+                        <option value="founder" {% if user_to_edit.user_type == 'founder' %}selected{% endif %}>Founder</option>
+                        <option value="student" {% if user_to_edit.user_type == 'student' %}selected{% endif %}>Student</option>
+                    </select>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if user_to_edit.is_active %}checked{% endif %}>
+                    <label class="form-check-label" for="is_active">Active Account</label>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <a href="{% url 'manage_users' %}" class="btn btn-secondary me-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

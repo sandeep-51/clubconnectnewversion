@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4">Search Results for "{{ query }}"</h2>
+
+    {% if results %}
+        {% if results.users %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Users</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for user in results.users %}
+                            <a href="{% url 'profile' %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ user.username }}</h5>
+                                    <small>User</small>
+                                </div>
+                                <p class="mb-1">{{ user.first_name }} {{ user.last_name }}</p>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if results.clubs %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Clubs</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for club in results.clubs %}
+                            <a href="{% url 'club_detail' club.id %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ club.name }}</h5>
+                                    <small>Club</small>
+                                </div>
+                                <p class="mb-1">{{ club.description }}</p>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if results.events %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Events</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for event in results.events %}
+                            <a href="{% url 'event_detail' event.id %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ event.title }}</h5>
+                                    <small>Event</small>
+                                </div>
+                                <p class="mb-1">{{ event.description }}</p>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if results.announcements %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Announcements</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for announcement in results.announcements %}
+                            <a href="#" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ announcement.title }}</h5>
+                                    <small>Announcement</small>
+                                </div>
+                                <p class="mb-1">{{ announcement.content }}</p>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+    {% else %}
+        <div class="card">
+            <div class="card-body">
+                <p class="text-muted">No results found.</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Club Search Results</h2>
+    <div class="mb-4">
+        <form method="GET" action="{% url 'search_clubs' %}">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search clubs..." value="{{ query }}">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="row">
+        {% for club in clubs %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ club.name }}</h5>
+                    <p class="card-text">{{ club.short_description }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{% url 'club_detail' club.id %}" class="btn btn-sm btn-primary">View Details</a>
+                        <small class="text-muted">{{ club.domain_tags }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No clubs found matching your search criteria.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

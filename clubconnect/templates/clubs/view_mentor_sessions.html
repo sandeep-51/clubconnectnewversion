@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="fas fa-chalkboard-teacher"></i> Mentor Sessions for {{ club.name }}</h2>
+    <p class="text-muted">Manage mentor session requests from students</p>
+    
+    {% if sessions %}
+        <div class="row">
+            {% for session in sessions %}
+                <div class="col-md-12 mb-3">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ session.mentor_topic }}</strong>
+                                <span class="badge 
+                                    {% if session.status == 'pending' %}bg-warning
+                                    {% elif session.status == 'approved' %}bg-success
+                                    {% elif session.status == 'rejected' %}bg-danger
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ session.get_status_display }}
+                                </span>
+                            </div>
+                            <small class="text-muted">{{ session.student.username }} - {{ session.created_at|timesince }} ago</small>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Description:</strong> {{ session.description }}</p>
+                            <p><strong>Preferred Date:</strong> {{ session.preferred_date }}</p>
+                            
+                            {% if session.assigned_mentor %}
+                                <p><strong>Assigned Mentor:</strong> {{ session.assigned_mentor.username }}</p>
+                            {% endif %}
+                            
+                            {% if session.meeting_link %}
+                                <p><strong>Meeting Link:</strong> <a href="{{ session.meeting_link }}" target="_blank">{{ session.meeting_link }}</a></p>
+                            {% endif %}
+                            
+                            {% if session.status == 'pending' %}
+                                <form method="post" action="{% url 'update_mentor_session' session.id %}">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-6 mb-2">
+                                            <input type="text" name="meeting_link" class="form-control" 
+                                                   placeholder="Meeting link (optional)">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <button type="submit" name="status" value="approved" class="btn btn-success btn-sm me-2">
+                                                <i class="fas fa-check"></i> Approve
+                                            </button>
+                                            <button type="submit" name="status" value="rejected" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times"></i> Reject
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> No mentor session requests yet.
+        </div>
+    {% endif %}
+    
+    <a href="{% url 'club_detail' club.id %}" class="btn btn-secondary mt-3">Back to Club</a>
+</div>
+{% endblock %}

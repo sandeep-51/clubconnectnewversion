@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="fas fa-chart-bar"></i> Survey Results: {{ survey.title }}</h2>
+    <p class="text-muted">{{ survey.description }}</p>
+    <p><strong>Total Responses:</strong> {{ total_responses }}</p>
+    
+    <hr>
+    
+    {% for question, result in results.items %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>{{ question.question_text }}</h5>
+                <small class="text-muted">Type: {{ question.get_question_type_display }}</small>
+            </div>
+            <div class="card-body">
+                {% if question.question_type == 'text' %}
+                    <h6>Responses:</h6>
+                    <ul class="list-group">
+                        {% for response in result %}
+                            <li class="list-group-item">{{ response }}</li>
+                        {% empty %}
+                            <li class="list-group-item text-muted">No responses yet</li>
+                        {% endfor %}
+                    </ul>
+                
+                {% elif question.question_type == 'choice' %}
+                    <h6>Response Distribution:</h6>
+                    {% for choice, count in result.items %}
+                        <div class="mb-2">
+                            <strong>{{ choice }}:</strong> {{ count }} response{{ count|pluralize }}
+                            <div class="progress" style="height: 25px;">
+                                <div class="progress-bar bg-info" role="progressbar" 
+                                     style="width: {% if total_responses > 0 %}{{ count|mul:100|div:total_responses }}{% else %}0{% endif %}%">
+                                    {% if total_responses > 0 %}
+                                        {{ count|mul:100|div:total_responses|floatformat:0 }}%
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                
+                {% elif question.question_type == 'rating' %}
+                    <h6>Average Rating: {{ result.average|floatformat:1 }} / 5.0</h6>
+                    <h6>Rating Distribution:</h6>
+                    {% for rating, count in result.distribution.items %}
+                        <div class="mb-2">
+                            <strong>{{ rating }} star{{ rating|pluralize }}:</strong> {{ count }} response{{ count|pluralize }}
+                            <div class="progress" style="height: 25px;">
+                                <div class="progress-bar bg-warning" role="progressbar" 
+                                     style="width: {% if total_responses > 0 %}{{ count|mul:100|div:total_responses }}{% else %}0{% endif %}%">
+                                    {% if total_responses > 0 %}
+                                        {{ count|mul:100|div:total_responses|floatformat:0 }}%
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    
+    <a href="{% url 'club_detail' survey.club.id %}" class="btn btn-secondary">Back to Club</a>
+</div>
+{% endblock %}

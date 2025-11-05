@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4><i class="fas fa-poll"></i> Create Survey for {{ club.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Survey Title</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="2"></textarea>
+                        </div>
+                        
+                        <hr>
+                        <h5>Questions</h5>
+                        <p class="text-muted">Add at least one question</p>
+                        
+                        <div id="questions-container">
+                            <div class="card mb-3 question-item">
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        <input type="text" class="form-control" name="question_text_1" 
+                                               placeholder="Question text" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <select class="form-select" name="question_type_1" required>
+                                            <option value="text">Text Answer</option>
+                                            <option value="choice">Multiple Choice</option>
+                                            <option value="rating">Rating (1-5)</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-2">
+                                        <input type="text" class="form-control" name="question_choices_1" 
+                                               placeholder="Choices (comma-separated, for multiple choice only)">
+                                        <small class="text-muted">For multiple choice: Option1, Option2, Option3</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="btn btn-secondary mb-3" onclick="addQuestion()">
+                            <i class="fas fa-plus"></i> Add Another Question
+                        </button>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'club_detail' club.id %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-info">
+                                <i class="fas fa-save"></i> Create Survey
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let questionCount = 1;
+
+function addQuestion() {
+    questionCount++;
+    const container = document.getElementById('questions-container');
+    const newQuestion = `
+        <div class="card mb-3 question-item">
+            <div class="card-body">
+                <div class="mb-2">
+                    <input type="text" class="form-control" name="question_text_${questionCount}" 
+                           placeholder="Question text" required>
+                </div>
+                <div class="mb-2">
+                    <select class="form-select" name="question_type_${questionCount}" required>
+                        <option value="text">Text Answer</option>
+                        <option value="choice">Multiple Choice</option>
+                        <option value="rating">Rating (1-5)</option>
+                    </select>
+                </div>
+                <div class="mb-2">
+                    <input type="text" class="form-control" name="question_choices_${questionCount}" 
+                           placeholder="Choices (comma-separated, for multiple choice only)">
+                </div>
+            </div>
+        </div>
+    `;
+    container.insertAdjacentHTML('beforeend', newQuestion);
+}
+</script>
+{% endblock %}

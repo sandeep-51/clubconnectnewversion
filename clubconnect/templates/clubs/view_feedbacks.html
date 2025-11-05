@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="fas fa-comments"></i> Feedback for {{ club.name }}</h2>
+    <p class="text-muted">Manage feedback, suggestions, and event ideas from students</p>
+    
+    {% if feedbacks %}
+        <div class="row">
+            {% for feedback in feedbacks %}
+                <div class="col-md-12 mb-3">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ feedback.title }}</strong>
+                                <span class="badge bg-info">{{ feedback.get_feedback_type_display }}</span>
+                                <span class="badge 
+                                    {% if feedback.status == 'pending' %}bg-warning
+                                    {% elif feedback.status == 'reviewed' %}bg-primary
+                                    {% else %}bg-success{% endif %}">
+                                    {{ feedback.get_status_display }}
+                                </span>
+                            </div>
+                            <small class="text-muted">By {{ feedback.student.username }} - {{ feedback.created_at|timesince }} ago</small>
+                        </div>
+                        <div class="card-body">
+                            <p>{{ feedback.description }}</p>
+                            
+                            <form method="post" action="{% url 'update_feedback_status' feedback.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <div class="d-flex gap-2">
+                                    <select name="status" class="form-select form-select-sm" style="width: auto;">
+                                        <option value="pending" {% if feedback.status == 'pending' %}selected{% endif %}>Pending</option>
+                                        <option value="reviewed" {% if feedback.status == 'reviewed' %}selected{% endif %}>Reviewed</option>
+                                        <option value="implemented" {% if feedback.status == 'implemented' %}selected{% endif %}>Implemented</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-primary">Update Status</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> No feedback received yet.
+        </div>
+    {% endif %}
+    
+    <a href="{% url 'club_detail' club.id %}" class="btn btn-secondary mt-3">Back to Club</a>
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Login</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="loginForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" 
+                                   value="{{ username }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <input type="hidden" id="force_login" name="force_login" value="false">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                    <div class="mt-3">
+                        <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if show_confirmation %}
+<div class="modal fade show" id="sessionConflictModal" tabindex="-1" style="display: block; background-color: rgba(0,0,0,0.5);" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle"></i> Already Logged In
+                </h5>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">Your account is already logged in on another device.</p>
+                <p class="mt-2"><strong>Do you want to continue?</strong></p>
+                <p class="text-muted small">If you continue, you will be automatically logged out from the other device.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='{% url 'login' %}'">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-warning" onclick="forceLogin()">
+                    <i class="fas fa-sign-in-alt"></i> Continue & Logout Other Device
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function forceLogin() {
+    document.getElementById('force_login').value = 'true';
+    document.getElementById('loginForm').submit();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var modal = document.getElementById('sessionConflictModal');
+    if (modal) {
+        modal.style.display = 'block';
+        document.body.classList.add('modal-open');
+        var backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop fade show';
+        document.body.appendChild(backdrop);
+    }
+});
+</script>
+{% endif %}
+{% endblock %}

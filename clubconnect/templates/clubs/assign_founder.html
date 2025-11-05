@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3>Assign Founder to {{ club.name }}</h3>
+        </div>
+<div class="card-body">
+            <form method="GET" class="mb-3" action="">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search users (students or founders) by name or email" value="{{ query }}">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </div>
+            </form>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="founder_id" class="form-label">Select User to Assign as Founder</label>
+                    <select name="founder_id" id="founder_id" class="form-select" required>
+                        <option value="">-- Select a user --</option>
+                        {% for user in potential_founders %}
+                            <option value="{{ user.id }}">{{ user.get_full_name|default:user.username }} ({{ user.email }}) - {{ user.user_type|title }}</option>
+                        {% empty %}
+                            <option value="">No matching users found</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Assign as Founder</button>
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

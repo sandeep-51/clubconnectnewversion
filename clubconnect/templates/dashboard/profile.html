@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Profile</h2>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                {{ user.username }}
+                {% if user.is_online %}
+                    <span class="online-indicator"></span>
+                {% endif %}
+            </h5>
+            <p class="card-text">Email: {{ user.email }}</p>
+            <p class="card-text">User Type: {{ user.get_user_type_display }}</p>
+        </div>
+    </div>
+
+    {% if user.is_student %}
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">My Clubs</h5>
+                {% if user.membership_set.all %}
+                    <ul>
+                        {% for membership in user.membership_set.all %}
+                            <li>{{ membership.club.name }} ({{ membership.get_status_display }})</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>You are not a member of any clubs yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% elif user.is_founder %}
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">My Founded Clubs</h5>
+                {% if user.founded_clubs.all %}
+                    <ul>
+                        {% for club in user.founded_clubs.all %}
+                            <li>{{ club.name }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>You have not founded any clubs yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% elif user.is_admin %}
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5 class="card-title">Admin Actions</h5>
+                <a href="{% url 'manage_users' %}" class="btn btn-primary">Manage Users</a>
+                <a href="{% url 'manage_clubs' %}" class="btn btn-primary">Manage Clubs</a>
+                <a href="{% url 'manage_settings' %}" class="btn btn-primary">Manage Settings</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+<style>
+    .online-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        background-color: green;
+        border-radius: 50%;
+        margin-left: 5px;
+    }
+</style>
+{% endblock %}

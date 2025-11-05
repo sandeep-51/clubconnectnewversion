@@ -1,0 +1,51 @@
+
+{% extends 'base.html' %}
+{% load form_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3>Create New Club</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="id_name" class="form-label">Club Name</label>
+                    {{ form.name|add_class:"form-control" }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_short_description" class="form-label">Short Description</label>
+                    {{ form.short_description|add_class:"form-control" }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_long_description" class="form-label">Long Description</label>
+                    {{ form.long_description|add_class:"form-control" }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_domain_tags" class="form-label">Domain Tags</label>
+                    {{ form.domain_tags|add_class:"form-control" }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_faculty_advisor" class="form-label">Faculty Advisor</label>
+                    {{ form.faculty_advisor|add_class:"form-control" }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_logo" class="form-label">Club Logo</label>
+                    {{ form.logo|add_class:"form-control" }}
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Create Club</button>
+                <a href="{% url 'manage_clubs' %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

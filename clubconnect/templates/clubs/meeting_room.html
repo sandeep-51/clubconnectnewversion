@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div id="notification-container" style="position: fixed; top: 80px; right: 20px; z-index: 9999;"></div>
+
+<div id="meeting-container" 
+     data-meeting-id="{{ meeting.id }}" 
+     data-user-name="{{ user.get_full_name|default:user.username }}"
+     data-current-user-id="{{ user.id }}"
+     class="container-fluid vh-100 bg-dark text-white p-0">
+    
+    <div class="row g-0 h-100">
+        <div class="col-md-9">
+            <div class="meeting-header bg-secondary p-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <h4 class="mb-0"><i class="fas fa-video"></i> {{ meeting.title }}</h4>
+                    <small class="text-muted">{{ meeting.club.name }}</small>
+                </div>
+                <div id="media-status" class="badge bg-info fs-6"></div>
+            </div>
+            
+            <div class="video-grid" style="height: calc(100vh - 140px); background: #1a1a1a; position: relative;">
+                <div class="position-relative h-100 d-flex align-items-center justify-content-center">
+                    <video id="local-video" autoplay playsinline class="w-100 h-100" style="object-fit: cover;"></video>
+                    <div class="position-absolute bottom-0 start-0 p-2 bg-dark bg-opacity-75 m-3 rounded">
+                        <small>You ({{ user.get_full_name|default:user.username }})</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="meeting-controls bg-secondary p-3 d-flex justify-content-center gap-3">
+                <button id="toggle-video" class="btn btn-secondary btn-lg rounded-circle" style="width: 60px; height: 60px;" title="Toggle Video">
+                    <i class="fas fa-video"></i>
+                </button>
+                
+                <button id="toggle-audio" class="btn btn-secondary btn-lg rounded-circle" style="width: 60px; height: 60px;" title="Toggle Audio">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                
+                <button id="share-screen" class="btn btn-info btn-lg rounded-circle" style="width: 60px; height: 60px;" title="Share Screen">
+                    <i class="fas fa-desktop"></i>
+                </button>
+                
+                <button id="end-call" class="btn btn-danger btn-lg rounded-circle" style="width: 60px; height: 60px;" title="End Call">
+                    <i class="fas fa-phone-slash"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="col-md-3 bg-dark border-start border-secondary" style="overflow-y: auto;">
+            <div class="p-3">
+                <h5 class="mb-3"><i class="fas fa-users"></i> Participants</h5>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> 
+                    <small>Video calling is enabled. Make sure to allow camera and microphone access.</small>
+                </div>
+                
+                <ul id="participants-list" class="list-group mb-4">
+                    <li class="list-group-item d-flex align-items-center bg-dark text-white border-secondary">
+                        <div class="avatar me-2">
+                            <i class="fas fa-user-circle fa-2x text-success"></i>
+                        </div>
+                        <div>
+                            <div>You</div>
+                            <small class="text-muted">{{ user.get_full_name|default:user.username }}</small>
+                        </div>
+                    </li>
+                </ul>
+                
+                <div class="mb-4">
+                    <h6><i class="fas fa-info-circle"></i> Meeting Info</h6>
+                    <div class="card bg-secondary text-white">
+                        <div class="card-body">
+                            <p class="mb-2"><strong>Description:</strong></p>
+                            <p class="small">{{ meeting.description }}</p>
+                            <p class="mb-2"><strong>Scheduled:</strong></p>
+                            <p class="small">{{ meeting.scheduled_time|date:"F j, Y - g:i A" }}</p>
+                            <p class="mb-2"><strong>Duration:</strong></p>
+                            <p class="small">{{ meeting.duration_minutes }} minutes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/meeting_room.js' %}"></script>
+{% endblock %}

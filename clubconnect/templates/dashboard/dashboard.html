@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Quick Actions -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Quick Actions</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% if user.is_admin %}
+                    <div class="col-md-4">
+                        <a href="{% url 'manage_users' %}" class="btn btn-primary btn-lg w-100">Manage Users</a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'manage_clubs' %}" class="btn btn-warning btn-lg w-100 text-white">Manage Clubs</a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'manage_settings' %}" class="btn btn-info btn-lg w-100 text-white">System Settings</a>
+                    </div>
+                {% elif user.is_founder %}
+                    <div class="col-md-6">
+                        <a href="{% url 'create_event' %}" class="btn btn-primary btn-lg w-100">Create Event</a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'create_announcement' %}" class="btn btn-secondary btn-lg w-100">Create Announcement</a>
+                    </div>
+                {% else %}
+                    <div class="col-md-6">
+                        <a href="{% url 'clubs:club_list' %}" class="btn btn-primary btn-lg w-100">Browse Clubs</a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'events' %}" class="btn btn-secondary btn-lg w-100">View Events</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- At-a-glance summary -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">At-a-Glance</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Next Event</h6>
+                    {% if next_event %}
+                        <p>{{ next_event.title }} - {{ next_event.date|date:"M d, Y" }}</p>
+                    {% else %}
+                        <p>No upcoming events.</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <h6>Recent Messages</h6>
+                    {% if recent_messages %}
+                        <ul class="list-unstyled">
+                            {% for message in recent_messages %}
+                                <li>{{ message.sender }}: {{ message.content|truncatechars:30 }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No new messages.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">My Clubs</h5>
+                    <p class="card-text display-4">{{ user_clubs.count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Upcoming Events</h5>
+                    <p class="card-text display-4">{{ upcoming_events.count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">New Messages</h5>
+                    <p class="card-text display-4">{{ new_messages.count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Announcements -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Recent Announcements</h5>
+        </div>
+        <div class="card-body">
+            {% if announcements %}
+                <div class="list-group">
+                    {% for announcement in announcements %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ announcement.title }}</h5>
+                                <small>{{ announcement.date_posted|date:"M d, Y" }}</small>
+                            </div>
+                            <p class="mb-1">{{ announcement.content }}</p>
+                            <small>Posted by: {{ announcement.club.name }}</small>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">No recent announcements.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Gamification: Club of the Week -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Club of the Week</h5>
+        </div>
+        <div class="card-body text-center">
+            <i class="fas fa-trophy fa-3x text-warning mb-3"></i>
+            <h5 class="card-title">{{ club_of_the_week.name }}</h5>
+            <p class="card-text">{{ club_of_the_week.description }}</p>
+            <a href="#" class="btn btn-warning text-white">Learn More</a>
+        </div>
+    </div>
+
+    <!-- Clubs List -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">My Clubs</h5>
+        </div>
+        <div class="card-body">
+            {% if user_clubs %}
+                <div class="row">
+                    {% for membership in user_clubs %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                {% if membership.club.logo %}
+                                    <img src="{{ membership.club.logo.url }}" class="card-img-top" alt="{{ membership.club.name }}">
+                                {% else %}
+                                    <div class="card-img-top bg-secondary text-white text-center py-5">
+                                        <i class="fas fa-users fa-3x"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ membership.club.name }}</h5>
+                                    <p class="card-text">{{ membership.club.description|truncatechars:100 }}</p>
+                                </div>
+                                <div class="card-footer">
+                                    <a href="#" class="btn btn-sm btn-primary">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">You are not a member of any clubs yet.</p>
+                <a href="#" class="btn btn-primary">Browse Clubs</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

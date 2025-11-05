@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load form_tags %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h3>Create Event for {{ club.name }}</h3>
+        </div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="id_title" class="form-label">Event Title</label>
+                    {{ form.title|add_class:"form-control" }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_description" class="form-label">Description</label>
+                    {{ form.description|add_class:"form-control" }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_location" class="form-label">Location</label>
+                    {{ form.location|add_class:"form-control" }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_start_time" class="form-label">Start Time</label>
+                    {{ form.start_time|add_class:"form-control" }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_end_time" class="form-label">End Time</label>
+                    {{ form.end_time|add_class:"form-control" }}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_image" class="form-label">Event Image</label>
+                    {{ form.image|add_class:"form-control" }}
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Create Event</button>
+                <a href="{% url 'club_detail' club.id %}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

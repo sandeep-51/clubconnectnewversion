@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4><i class="fas fa-user-tie"></i> Book Mentor Session with {{ club.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Connect with club mentors for guidance and advice</p>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="mentor_topic" class="form-label">Topic</label>
+                            <input type="text" class="form-control" id="mentor_topic" name="mentor_topic" 
+                                   placeholder="e.g., Career Guidance, Technical Help, Project Review" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" 
+                                      placeholder="Please describe what you'd like to discuss..." required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="preferred_date" class="form-label">Preferred Date & Time</label>
+                            <input type="datetime-local" class="form-control" id="preferred_date" name="preferred_date" required>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i> Club representatives will review your request and get back to you soon.
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'club_detail' club.id %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-calendar-check"></i> Request Session
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

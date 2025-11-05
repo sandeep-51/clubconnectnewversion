@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="fas fa-stream"></i> Activity Feed</h2>
+    <p class="text-muted">Stay updated with the latest club activities, events, and announcements</p>
+    
+    <div class="row">
+        <div class="col-md-8">
+            {% if activities %}
+                {% for activity in activities %}
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            {% if activity.type == 'announcement' %}
+                                <h5 class="card-title"><i class="fas fa-bullhorn text-primary"></i> {{ activity.title }}</h5>
+                                <p class="card-text">{{ activity.content|truncatewords:30 }}</p>
+                                <small class="text-muted">Posted {{ activity.created_at|timesince }} ago</small>
+                            {% elif activity.type == 'event' %}
+                                <h5 class="card-title"><i class="fas fa-calendar text-success"></i> {{ activity.title }}</h5>
+                                <p class="card-text">{{ activity.description|truncatewords:30 }}</p>
+                                <p><i class="fas fa-map-marker-alt"></i> {{ activity.location }}</p>
+                                <p><i class="fas fa-clock"></i> {{ activity.date }}</p>
+                                <small class="text-muted">{{ activity.club.name }}</small>
+                            {% elif activity.type == 'post' %}
+                                <h5 class="card-title"><i class="fas fa-image text-warning"></i> Club Post</h5>
+                                <p class="card-text">{{ activity.content|truncatewords:30 }}</p>
+                                {% if activity.image %}
+                                    <img src="{{ activity.image.url }}" class="img-fluid" style="max-height: 200px;" alt="Post image">
+                                {% endif %}
+                                <p class="mt-2">
+                                    <i class="fas fa-heart"></i> {{ activity.likes.count }} likes
+                                </p>
+                                <small class="text-muted">{{ activity.club.name }} - {{ activity.created_at|timesince }} ago</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> No recent activities to display. Join some clubs to see updates!
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <i class="fas fa-filter"></i> Filter Activities
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Coming soon: Filter by club, activity type, and date range</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

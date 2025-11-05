@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Messages</h2>
+    
+    <div class="card">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="inbox-tab" data-bs-toggle="tab" data-bs-target="#inbox" type="button" role="tab" aria-controls="inbox" aria-selected="true">Inbox</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="sent-tab" data-bs-toggle="tab" data-bs-target="#sent" type="button" role="tab" aria-controls="sent" aria-selected="false">Sent</button>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="inbox" role="tabpanel" aria-labelledby="inbox-tab">
+                    {% if received_messages %}
+                        <div class="list-group">
+                            {% for message in received_messages %}
+                                <div class="list-group-item list-group-item-action {% if not message.is_read %}bg-light{% endif %}">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">From: {{ message.sender.get_full_name|default:message.sender.username }}</h5>
+                                        <small>{{ message.created_at|date:"M d, Y H:i" }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ message.content }}</p>
+                                    {% if not message.is_read %}
+                                        <span class="badge bg-primary">New</span>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No messages in your inbox.</p>
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade" id="sent" role="tabpanel" aria-labelledby="sent-tab">
+                    {% if sent_messages %}
+                        <div class="list-group">
+                            {% for message in sent_messages %}
+                                <div class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">To: {{ message.receiver.get_full_name|default:message.receiver.username }}</h5>
+                                        <small>{{ message.created_at|date:"M d, Y H:i" }}</small>
+                                    </div>
+                                    <p class="mb-1">{{ message.content }}</p>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No sent messages.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">New Message</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" action="{% url 'send_message' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="receiver" class="form-label">To</label>
+                    <select class="form-select" id="receiver" name="receiver" required>
+                        <option value="">Select recipient</option>
+                        {% for user in users %}
+                            <option value="{{ user.id }}">{{ user.get_full_name|default:user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="content" class="form-label">Message</label>
+                    <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Manage Clubs</h2>
+        <div>
+            <a href="{% url 'create_club' %}" class="btn btn-success me-2">Create New Club</a>
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Club Management</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Domain</th>
+                            <th>Founders</th>
+                            <th>Members</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for club in clubs %}
+                        <tr>
+                            <td>{{ club.name }}</td>
+                            <td>{{ club.domain_tags }}</td>
+                            <td>
+                                {% if club.founders.all %}
+                                    <ul class="list-unstyled mb-0">
+                                        {% for founder in club.founders.all %}
+                                            <li>{{ founder.username }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <span class="text-muted">Not assigned</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ club.membership_set.count }}</td>
+                            <td>
+                                <a href="{% url 'club_detail' club.id %}" class="btn btn-sm btn-info">View</a>
+                                {% if not club.founder %}
+                                <a href="{% url 'assign_founder' club.id %}" class="btn btn-sm btn-warning">Assign Founder</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No clubs found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
