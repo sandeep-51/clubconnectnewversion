@@ -25,9 +25,9 @@ SECRET_KEY = 'django-insecure-g4+(-^=3$r&sv65fz33=r+tz@#b(hjwi_3-dh#9*=_1#6_uoox
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['clubconnectnewversion.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['clubconnectnewversion-1.onrender.com', 'localhost', '127.0.0.1']
 
-CSRF_TRUSTED_ORIGINS = ['https://clubconnectnewversion.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://clubconnectnewversion-1.onrender.com']
 
 # Application definition
 
